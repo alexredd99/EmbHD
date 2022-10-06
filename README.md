@@ -1,0 +1,1 @@
+Embedded Hyperdimensional Computing Library
