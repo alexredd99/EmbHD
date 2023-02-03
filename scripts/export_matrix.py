@@ -1,6 +1,7 @@
 import numpy as np
 import torch as torch
 import torchhd as functional
+import sys
 
 def bool_str(i):
     if i: return "1"
@@ -43,22 +44,48 @@ def export_hv(name, type, rows, dim, save=False):
     if save: torch.save(m, "{0}.pt".format(name))
 
     data = convert_data(m)
-    out = "#ifndef HV_MATRIX\n" +\
-    "#define HV_MATRIX\n" +\
-    "#include \"hv_matrix.h\"\n" +\
-    "#endif\n\n" +\
-    "unsigned int {0}_data[{1}] = {{\n".format(name,len(data)) +\
+    #out = "#ifndef HV_MATRIX\n" +\
+    #"#define HV_MATRIX\n" +\
+    #"#include \"hv_matrix.h\"\n" +\
+    #"#endif\n\n" +\
+    out = "uint32_t __attribute__((section(\".text\"))) {0}_data[{1}] = {{\n".format(name,len(data)) +\
     convert_str(data) +\
     "};\n\n" +\
-    "HvMatrix {0} = {{\n".format(name) +\
-    "    .dtype  = HvBinary,\n" +\
+    "Matrix {0} = {{\n".format(name) +\
+    "    .dtype  = MBin,\n" +\
     "    .height = {0},\n".format(m.size()[0]) +\
     "    .width  = {0},\n".format(m.size()[1]) +\
     "    .size   = {0},\n".format(len(data)) +\
-    "    .data   = (void*) {0}_data\n".format(name) +\
+    "    .data   = {0}_data\n".format(name) +\
     "};"
 
     return out
+
+
+def main():
+    args = sys.argv[1:]
+    try:
+        if args[0] == "r": type = "random"
+        elif args[0] == "l": type = "level"
+        elif args[0] == "c": type = "circular"
+        else: type = args[0]
+        dim  = int(args[1])
+        rows = int(args[2])
+        name = args[3]
+
+        #DIM  = 10000
+        #ROWS = 28*28
+        #TYPE = "random"
+        #NAME = "randomhv"
+
+        out = export_hv(name, type, rows, dim)
+        print(out)
+    except:
+        print("Incorrect usage")
+
+if __name__ == '__main__':
+    main()
+
 
 """
 Usage example, must save printed out code to .h file

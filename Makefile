@@ -1,28 +1,11 @@
-TARGET_EXEC := test
+libmatrix.a: armcm4_helpers.o  matrix.o
+	arm-none-eabi-ar rcs libmatrix.a armcm4_helpers.o matrix.o
+	arm-none-eabi-ranlib libmatrix.a
+matrix.o: src/matrix.c include/matrix.h
+	arm-none-eabi-gcc -static -mcpu=cortex-m4 -O3 -ggdb -fgnu89-inline -c include/matrix.h src/matrix.c
+armcm4_helpers.o: src/armcm4_helpers.c include/armcm4_helpers.h
+	arm-none-eabi-gcc -static -mcpu=cortex-m4 -O3 -ffast-math -ggdb -fgnu89-inline -c src/armcm4_helpers.c include/armcm4_helpers.h
 
-BUILD_DIR := ./build
-SRC_DIRS := ./src 
-INC_DIRS := ./include
-
-SRCS := $(shell find $(SRC_DIRS) -name '*.cpp' -or -name '*.c' -or -name '*.s')
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
-
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
-
-CPPFLAGS := $(INC_FLAGS) -MMD -MP -O2 
-
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
-
-$(BUILD_DIR)/%.c.o: %.c
-	mkdir -p $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o  $@
-
-# Build step for C++ source
-$(BUILD_DIR)/%.cpp.o: %.cpp
-	mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 
 .PHONY: clean
