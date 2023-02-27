@@ -1,5 +1,6 @@
 #include <time.h>
 #include <stdlib.h>
+#include <math.h>  // REMOVE LATER, USE OPTIMIZED MATH
 
 #ifndef MATRIX_LIB
 #define MATRIX_LIB
@@ -557,6 +558,100 @@ inline MOpStatus armcm4_MEqual(
             *result = 0;
             break;
         }
+    }
+    return MOP_SUCCESS;
+}
+
+inline MOpStatus armcm4_MSin(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row){
+    // Should I check type here or in matrix.c instead?
+    if (dst->dtype != MFloat32) {return MOP_TYPE_ERROR;}
+    unsigned int row_size = src->size/src->height;
+
+    switch(src->dtype){
+        case MBin: { // Is this even possible?
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MInt8: {
+            int8_t* src_data = (int8_t*) (src->data + (src_row*row_size));
+            float* dst_data = (float*) (dst->data + (dst_row*row_size));
+            for (unsigned int x = 0; x < src->width; x++){
+                dst_data[x] = (float) sinf((float)src_data[x]);
+            }
+        }
+            break;
+        case MInt16: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MInt32: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MUint8: {  
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MUint16: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MUint32: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        default: 
+            return MOP_UNIMPLEMENTED;
+            break;
+    }
+    return MOP_SUCCESS;
+}
+
+inline MOpStatus armcm4_MCos(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row){
+    // Should I check type here or in matrix.c instead?
+    if (dst->dtype != MFloat32) {return MOP_TYPE_ERROR;}
+    unsigned int row_size = src->size/src->height;
+
+    switch(src->dtype){
+        case MBin: { // Is this even possible?
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MInt8: {
+            int8_t* src_data = (int8_t*) (src->data + (src_row*row_size));
+            float* dst_data = (float*) (dst->data + (dst_row*row_size));
+            for (unsigned int x = 0; x < src->width; x++){
+                dst_data[x] = (float) cosf((float)src_data[x]);
+            }
+        }
+            break;
+        case MInt16: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MInt32: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MUint8: {  
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MUint16: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        case MUint32: {
+            return MOP_UNIMPLEMENTED;
+        }
+            break;
+        default: 
+            return MOP_UNIMPLEMENTED;
+            break;
     }
     return MOP_SUCCESS;
 }

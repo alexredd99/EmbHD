@@ -93,3 +93,22 @@ MOpStatus MEqual(
     // Check ARCH
     return armcm4_MEqual(result, m0, m1);
 }
+
+MOpStatus MSin(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row){
+    // Ignore type error for now
+    if(src->width != dst->width){return MOP_WIDTH_ERROR;}
+
+    // Check ARCH
+    return armcm4_MSin(dst, dst_row, src, src_row);
+}
+
+MOpStatus MCos(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row){
+    if(src->width != dst->width){return MOP_WIDTH_ERROR;}
+
+    // Check ARCH
+    return armcm4_MCos(dst, dst_row, src, src_row);
+}

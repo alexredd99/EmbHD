@@ -7,7 +7,8 @@ typedef enum {
 	MInt32,
 	MUint8,
 	MUint16,
-	MUint32
+	MUint32,
+        MFloat32,
 } MDataType;
 
 typedef struct {
@@ -57,3 +58,19 @@ MOpStatus MHamDist(
 MOpStatus MEqual(
         unsigned int* result,
         Matrix* m0, Matrix* m1);
+
+MOpStatus MDot(
+        Matrix* dst, unsigned int dst_row, 
+        Matrix* m0,  unsigned int m0_row,
+        Matrix* m1,  unsigned int m1_row);
+
+// Dst MUST be float32?
+// Maybe offer software emulation of tiny floats in future
+MOpStatus MSin(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row);
+
+// Dst MUST be float32?
+MOpStatus MCos(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row);

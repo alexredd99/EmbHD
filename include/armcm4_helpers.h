@@ -31,3 +31,11 @@ inline MOpStatus armcm4_MHamDist(
 inline MOpStatus armcm4_MEqual(
         unsigned int* result,
         Matrix* m0, Matrix* m1);
+
+inline MOpStatus armcm4_MSin(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row);
+
+inline MOpStatus armcm4_MCos(
+        Matrix* dst, unsigned int dst_row,
+        Matrix* src, unsigned int src_row);
