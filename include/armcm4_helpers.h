@@ -39,3 +39,8 @@ inline MOpStatus armcm4_MSin(
 inline MOpStatus armcm4_MCos(
         Matrix* dst, unsigned int dst_row,
         Matrix* src, unsigned int src_row);
+
+inline MOpStatus armcm4_MLinear(
+        Matrix* dst,
+        Matrix* m0,
+        Matrix* m1);

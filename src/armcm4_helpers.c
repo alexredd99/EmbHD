@@ -27,7 +27,6 @@
 1101 0x0101FF01
 1110 0x010101FF
 1111 0x01010101
-
 */
 
 inline uint32_t bin_int8(uint8_t nibb){
@@ -188,6 +187,15 @@ inline MOpStatus armcm4_MAdd(
             }
         }
             break;
+        case MFloat32: {
+            float* dst_data = (float*) dst->data + (dst_row*row_size);
+            float* m0_data  = (float*) m0->data + (m0_row*row_size);
+            float* m1_data  = (float*) m1->data + (m1_row*row_size);
+            for (unsigned int x = 0; x < row_size; x++){
+                dst_data[x] = m0_data[x] + m1_data[x];
+            }
+        }
+            break;
         default: break;
     }
     return MOP_SUCCESS;
@@ -255,6 +263,15 @@ inline MOpStatus armcm4_MSub(
             }
         }
             break;
+        case MFloat32: {
+            float* dst_data = (float*) dst->data + (dst_row*row_size);
+            float* m0_data  = (float*) m0->data + (m0_row*row_size);
+            float* m1_data  = (float*) m1->data + (m1_row*row_size);
+            for (unsigned int x = 0; x < row_size; x++){
+                dst_data[x] = m0_data[x] - m1_data[x];
+            }
+        }
+            break;
         default: break;
     }
     return MOP_SUCCESS;
@@ -281,6 +298,15 @@ inline MOpStatus armcm4_MMult(
         case MUint8:  return MOP_UNIMPLEMENTED;
         case MUint16: return MOP_UNIMPLEMENTED;
         case MUint32: return MOP_UNIMPLEMENTED;
+        case MFloat32: {
+            float* dst_data = (float*) dst->data + (dst_row*row_size);
+            float* m0_data  = (float*) m0->data + (m0_row*row_size);
+            float* m1_data  = (float*) m1->data + (m1_row*row_size);
+            for (unsigned int x = 0; x < row_size; x++){
+                dst_data[x] = m0_data[x] * m1_data[x];
+            }
+        }
+            break;
         default: break;
     }
     return MOP_SUCCESS;
@@ -602,6 +628,14 @@ inline MOpStatus armcm4_MSin(
             return MOP_UNIMPLEMENTED;
         }
             break;
+        case MFloat32: {
+            float* dst_data = (float*) dst->data + (dst_row*row_size);
+            float* src_data = (float*) src->data + (src_row*row_size);
+            for (unsigned int x = 0; x < row_size; x++){
+                dst_data[x] = sinf(src_data[x]);
+            }
+        }
+            break;
         default: 
             return MOP_UNIMPLEMENTED;
             break;
@@ -649,8 +683,61 @@ inline MOpStatus armcm4_MCos(
             return MOP_UNIMPLEMENTED;
         }
             break;
+        case MFloat32: {
+            float* dst_data = (float*) dst->data + (dst_row*row_size);
+            float* src_data = (float*) src->data + (src_row*row_size);
+            for (unsigned int x = 0; x < row_size; x++){
+                dst_data[x] = cosf(src_data[x]);
+            }
+        }
+            break;
         default: 
             return MOP_UNIMPLEMENTED;
+            break;
+    }
+    return MOP_SUCCESS;
+}
+
+inline MOpStatus armcm4_MLinear(
+        Matrix* dst,
+        Matrix* m0,
+        Matrix* m1){
+   
+    unsigned int dst_rsize = dst->size/dst->height;
+    unsigned int m0_rsize = m0->size/m0->height; // should be equal?
+    unsigned int m1_rsize = m1->size/m1->height;
+
+    switch(dst->dtype){
+        case MBin:    return MOP_UNIMPLEMENTED;
+        case MInt8: {
+            int8_t* dst_data = (int8_t*) dst->data;
+            for (unsigned int x = 0; x < dst_rsize; x++){ // Col
+                dst_data[x] = 0;
+                int8_t* m0_data  = (int8_t*) m0->data + (x*m0_rsize);
+                int8_t* m1_data  = (int8_t*) m1->data + (x*m1_rsize);
+                for (unsigned int y = 0; y < m1_rsize; y++){ // row
+                    dst_data[x] += (m0_data[x] * m1_data[(y*m1_rsize)+x]);
+                }
+            }
+        }
+            break;
+        case MInt16:  return MOP_UNIMPLEMENTED;
+        case MInt32:  return MOP_UNIMPLEMENTED;
+        case MUint8:  return MOP_UNIMPLEMENTED;
+        case MUint16: return MOP_UNIMPLEMENTED;
+        case MUint32: return MOP_UNIMPLEMENTED;
+        case MFloat32:{
+            float* dst_data = (float*) dst->data;
+            float* m0_data  = (float*) m0->data;
+            float* m1_data  = (float*) m1->data;
+
+            for (unsigned int y = 0; y < dst_rsize; y++){
+                dst_data[y] = 0;
+                for (unsigned int x = 0; x < m1_rsize; x++){
+                    dst_data[y] += (m0_data[x] * m1_data[(y*m1_rsize)+x]);
+                }
+            }
+        }
             break;
     }
     return MOP_SUCCESS;

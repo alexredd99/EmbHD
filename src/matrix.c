@@ -112,3 +112,23 @@ MOpStatus MCos(
     // Check ARCH
     return armcm4_MCos(dst, dst_row, src, src_row);
 }
+
+// Linear transformation, maybe add optional bias term?
+// Computes dst = m0 * m1^T
+// m0 shape of AxB, m1 shape of CxB
+// dst shape of AxC
+MOpStatus MLinear(
+        Matrix* dst,
+        Matrix* m0,
+        Matrix* m1){
+    if(!((dst->dtype == m0->dtype) && (dst->dtype == m1->dtype))){
+        return MOP_TYPE_ERROR;
+    }
+    // Ignore width for now....
+    //if(!((dst->width == m0->width) && (dst->width == m1->width))){
+    //    return MOP_WIDTH_ERROR;
+    //}
+    
+    // Check arch?
+    return armcm4_MLinear(dst, m0, m1);
+}

@@ -44,7 +44,8 @@ def convert_uint32(input: torch.tensor, name: str):
     m = np.insert(m, range(1, len(m)), ",")
     m = np.insert(m, range(16, len(m), 16), "\n")
     raw = "".join(m)
-    out = "uint32_t __attribute__((section(\".text\"))) {0}_data[{1}] = {{\n".format(name,size)
+    out = "#include <stdint.h>\n"
+    out += "uint32_t __attribute__((section(\".text\"))) {0}_data[{1}] = {{\n".format(name,size)
     out += raw + "\n};\n\n" +\
     "Matrix {0} = {{\n".format(name) +\
     "    .dtype  = {0},\n".format(dtype) +\
@@ -75,8 +76,13 @@ def export_hv(name: str, dtype: any, sim: str, dim: int, rows: int):
         m = torch.nn.functional.normalize(m)
         b = torch.empty(1, dim, dtype=torch.float32)
         torch.nn.init.uniform_(b,0,2*torch.pi)
+        print(b)
         convert_uint32(b, "{0}_bias".format(name))
     else:
         raise ValueError('invalid similarity')
-    
+    print(m)
     return convert_uint32(m, name)
+
+t = torch.tensor([[1,2]], dtype=torch.float32)
+
+convert_uint32(t,"test")

@@ -74,3 +74,12 @@ MOpStatus MSin(
 MOpStatus MCos(
         Matrix* dst, unsigned int dst_row,
         Matrix* src, unsigned int src_row);
+
+// Linear transformation, maybe add optional bias term?
+// Computes dst = m0 * m1^T
+// m0 shape of AxB, m1 shape of CxB
+// dst shape of AxC
+MOpStatus MLinear(
+        Matrix* dst,
+        Matrix* m0,
+        Matrix* m1);
