@@ -1,12 +1,12 @@
 #ifndef MATRIX_LIB
 #define MATRIX_LIB
-#include "../include/matrix.h"
+#include "matrix.h"
 #endif
 
 //// iff architecture...
 #ifndef ARMCM4
 #define ARMCM4
-#include "../include/armcm4_helpers.h"
+#include "armcm4_helpers.h"
 #endif
 
 

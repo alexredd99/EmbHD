@@ -1,33 +1,15 @@
 #include <time.h>
 #include <stdlib.h>
-#include <math.h>  // REMOVE LATER, USE OPTIMIZED MATH
+#include <stdint.h>
+#include <math.h>
 
 #ifndef MATRIX_LIB
 #define MATRIX_LIB
-#include "../include/matrix.h"
+#include "matrix.h"
 #endif
 
-#include "../include/armcm4_helpers.h"
-#include "../include/lookup_tables.h"
-
-// Turn into x16 lookup table
-/*
-0001 0xFFFFFF01
-0010 0xFFFF01FF
-0011 0xFFFF0101
-0100 0xFF01FFFF
-0101 0xFF01FF01
-0110 0xFF0101FF
-0111 0xFF010101
-1000 0x01FFFFFF
-1001 0x01FFFF01
-1010 0x01FF01FF
-1011 0x01FF0101
-1100 0x0101FFFF
-1101 0x0101FF01
-1110 0x010101FF
-1111 0x01010101
-*/
+#include "armcm4_helpers.h"
+#include "lookup_tables.h"
 
 inline uint32_t bin_int8(uint8_t nibb){
     uint32_t result = 0;
